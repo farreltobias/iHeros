@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ranks",
+  "info": {
+    "singularName": "rank",
+    "pluralName": "ranks",
+    "displayName": "Rank",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "level": {
+      "required": true,
+      "unique": true,
+      "max": 4,
+      "min": 1,
+      "type": "integer"
+    },
+    "name": {
+      "type": "string",
+      "unique": true,
+      "required": true,
+      "maxLength": 1,
+      "private": true
+    }
+  }
+}

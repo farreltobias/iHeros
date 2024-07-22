@@ -590,6 +590,46 @@ export interface PluginContentReleasesReleaseAction
   };
 }
 
+export interface PluginGoogleMapsConfig extends Schema.SingleType {
+  collectionName: 'google_maps_configs';
+  info: {
+    singularName: 'config';
+    pluralName: 'configs';
+    displayName: 'Google Maps Config';
+  };
+  options: {
+    populateCreatorFields: false;
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    googleMapsKey: Attribute.String &
+      Attribute.Required &
+      Attribute.DefaultTo<''>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::google-maps.config',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::google-maps.config',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface PluginI18NLocale extends Schema.CollectionType {
   collectionName: 'i18n_locale';
   info: {
@@ -788,6 +828,77 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
+export interface ApiHeroHero extends Schema.CollectionType {
+  collectionName: 'heroes';
+  info: {
+    singularName: 'hero';
+    pluralName: 'heroes';
+    displayName: 'Hero';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.SetMinMaxLength<{
+        minLength: 3;
+      }>;
+    photo: Attribute.Media<'images'> & Attribute.Required;
+    rank: Attribute.Relation<'api::hero.hero', 'oneToOne', 'api::rank.rank'>;
+    location: Attribute.JSON &
+      Attribute.Required &
+      Attribute.CustomField<'plugin::google-maps.location-picker'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::hero.hero', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::hero.hero', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiRankRank extends Schema.CollectionType {
+  collectionName: 'ranks';
+  info: {
+    singularName: 'rank';
+    pluralName: 'ranks';
+    displayName: 'Rank';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    level: Attribute.Integer &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 4;
+        },
+        number
+      >;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.Private &
+      Attribute.Unique &
+      Attribute.SetMinMaxLength<{
+        maxLength: 1;
+      }>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::rank.rank', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::rank.rank', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -802,10 +913,13 @@ declare module '@strapi/types' {
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
+      'plugin::google-maps.config': PluginGoogleMapsConfig;
       'plugin::i18n.locale': PluginI18NLocale;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
+      'api::hero.hero': ApiHeroHero;
+      'api::rank.rank': ApiRankRank;
     }
   }
 }
