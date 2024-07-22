@@ -2,7 +2,14 @@
   "version": "0.2",
   "language": "en",
   "caseSensitive": false,
-  "words": [],
+  "words": [
+    "encrypter",
+    "hasher",
+    "ihero",
+    "strapi",
+    "tsconfigs",
+    "unplugin"
+  ],
   "flagWords": [],
   "ignorePaths": [
     "node_modules/**"
