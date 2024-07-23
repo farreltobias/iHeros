@@ -6,9 +6,11 @@
     "encrypter",
     "hasher",
     "ihero",
+    "kafkajs",
     "strapi",
     "tsconfigs",
-    "unplugin"
+    "unplugin",
+    "websockets"
   ],
   "flagWords": [],
   "ignorePaths": [
