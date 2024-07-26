@@ -6,6 +6,10 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { Hero } from '../../enterprise/entities/hero'
 import { Threat } from '../../enterprise/entities/threat'
 import {
+  HeroStatus,
+  HeroStatusEnum,
+} from '../../enterprise/entities/value-objects/hero-status'
+import {
   ThreatStatus,
   ThreatStatusEnum,
 } from '../../enterprise/entities/value-objects/threat-status'
@@ -22,7 +26,7 @@ interface AllocateHeroToThreatRequestUseCase {
 }
 
 type AllocateHeroToThreatResponseUseCase = Either<
-  ResourceNotFoundError,
+  ResourceNotFoundError | WrongThreatStatusError | RankNotSuitableError,
   { threat: Threat; hero: Hero }
 >
 
@@ -64,14 +68,17 @@ export class AllocateHeroToThreatUseCase {
       return left(new RankNotSuitableError())
     }
 
+    threat.heroId = hero.id
     threat.battleStartedAt = new Date()
     threat.durationTime = danger.duration.time
     threat.status = ThreatStatus.create(ThreatStatusEnum.BATTLING)
 
-    hero.threatBattlingId = threat.id
+    hero.status = HeroStatus.create(HeroStatusEnum.BATTLING)
 
-    await this.threatsRepository.save(threat)
-    await this.heroesRepository.save(hero)
+    await Promise.all([
+      this.threatsRepository.save(threat),
+      this.heroesRepository.save(hero),
+    ])
 
     return right({ threat, hero })
   }

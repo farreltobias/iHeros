@@ -25,10 +25,12 @@ let sut: AllocateHeroToThreatUseCase
 
 describe('Allocate Hero to Threat Use Case', () => {
   beforeEach(() => {
-    inMemoryThreatsRepository = new InMemoryThreatsRepository()
-    inMemoryHeroesRepository = new InMemoryHeroesRepository()
     inMemoryDangersRepository = new InMemoryDangersRepository()
+    inMemoryThreatsRepository = new InMemoryThreatsRepository()
     inMemoryRanksRepository = new InMemoryRanksRepository()
+    inMemoryHeroesRepository = new InMemoryHeroesRepository(
+      inMemoryRanksRepository,
+    )
     sut = new AllocateHeroToThreatUseCase(
       inMemoryThreatsRepository,
       inMemoryHeroesRepository,
@@ -58,7 +60,9 @@ describe('Allocate Hero to Threat Use Case', () => {
     expect(result.isRight()).toBe(true) // garantes condition below
     expect(result.value).toEqual({
       hero: expect.objectContaining({
-        threatBattlingId: threat.id,
+        status: expect.objectContaining({
+          value: 'BATTLING',
+        }),
       }),
       threat: expect.objectContaining({
         battleStartedAt: expect.any(Date),
