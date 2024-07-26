@@ -17,7 +17,7 @@ export function makeThreat(
 ) {
   const threat = Threat.create(
     {
-      monsterName: faker.person.fullName(),
+      monsterId: new UniqueEntityID(),
       location: new Location({
         lat: faker.location.latitude(),
         lng: faker.location.longitude(),

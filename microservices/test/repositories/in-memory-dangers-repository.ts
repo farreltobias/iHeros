@@ -13,4 +13,14 @@ export class InMemoryDangersRepository implements DangersRepository {
 
     return danger
   }
+
+  async findByName(name: string): Promise<Danger | null> {
+    const danger = this.items.find((item) => item.name === name)
+
+    if (!danger) {
+      return null
+    }
+
+    return danger
+  }
 }
