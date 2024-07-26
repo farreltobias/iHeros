@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Monster {
+  id          String @id @default(uuid())
+  name        String @unique
+  description String
+  photoUrl    String @map("photo_url")
+
+  threats Threat[]
+
+  @@map("monsters")
+}
+
+enum Status {
+  UNASSIGNED
+  BATTLING
+  RESOLVED
+}
+
+model Threat {
+  id           String @id @default(uuid())
+  durationTime Int?   @map("duration_time")
+  status       Status
+  latitude     Float
+  longitude    Float
+
+  monsterId String  @map("monster_id")
+  dangerId  String  @map("danger_id")
+  heroId    String? @map("hero_id")
+
+  createdAt       DateTime  @default(now()) @map("created_at")
+  battleStartedAt DateTime? @map("battle_started_at")
+  updatedAt       DateTime? @updatedAt @map("updated_at")
+
+  danger  Danger  @relation(fields: [dangerId], references: [id])
+  monster Monster @relation(fields: [monsterId], references: [id])
+
+  @@map("threats")
+}
+
+model Danger {
+  id    String @id @default(uuid())
+  name  String @unique
+  level Int
+
+  minDuration Int @map("min_duration")
+  maxDuration Int @map("max_duration")
+
+  threats Threat[]
+
+  @@map("dangers")
+}
