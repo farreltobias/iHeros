@@ -4,6 +4,7 @@ import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 
 import { Hero } from '../../enterprise/entities/hero'
+import { DangersRepository } from '../repositories/dangers-repository'
 import { HeroesRepository } from '../repositories/heroes-repository'
 import { ThreatsRepository } from '../repositories/threats-repository'
 
@@ -13,7 +14,7 @@ interface SelectNearestHeroByThreatRequestUseCase {
 
 type SelectNearestHeroByThreatResponseUseCase = Either<
   ResourceNotFoundError,
-  { hero: Hero }
+  { hero: Hero | null }
 >
 
 @Injectable()
@@ -21,6 +22,7 @@ export class SelectNearestHeroByThreatUseCase {
   constructor(
     private threatsRepository: ThreatsRepository,
     private heroesRepository: HeroesRepository,
+    private dangerRepository: DangersRepository,
   ) {}
 
   async execute({
@@ -32,8 +34,17 @@ export class SelectNearestHeroByThreatUseCase {
       return left(new ResourceNotFoundError())
     }
 
+    const danger = await this.dangerRepository.findById(
+      threat.dangerId.toString(),
+    )
+
+    if (!danger) {
+      return left(new ResourceNotFoundError())
+    }
+
     const [hero] = await this.heroesRepository.findManyNearby({
       location: threat.location,
+      threatLevel: danger.level,
       page: 1,
     })
 
