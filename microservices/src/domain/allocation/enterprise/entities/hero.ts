@@ -1,14 +1,15 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
+import { HeroStatus } from './value-objects/hero-status'
 import { Location } from './value-objects/location'
 
 export interface HeroProps {
   name: string
-  baseLocation: Location
+  location: Location
   rankId: UniqueEntityID
-  threatBattlingId?: UniqueEntityID | null
 
+  status: HeroStatus
   updatedAt?: Date | null
 }
 
@@ -17,21 +18,32 @@ export class Hero extends Entity<HeroProps> {
     return this.props.name
   }
 
-  get baseLocation(): Location {
-    return this.props.baseLocation
+  get location(): Location {
+    return this.props.location
   }
 
-  get threatBattlingId(): UniqueEntityID | undefined | null {
-    return this.props.threatBattlingId
+  get status(): HeroStatus {
+    return this.props.status
   }
 
-  set threatBattlingId(threatBattlingId: UniqueEntityID | undefined | null) {
-    this.props.threatBattlingId = threatBattlingId
+  set status(status: HeroStatus) {
+    const { value } = status
+    const isValidStatus = this.props.status.isValid(value)
+
+    if (!isValidStatus) {
+      return
+    }
+
+    this.props.status = status
     this.touch()
   }
 
   get rankId(): UniqueEntityID {
     return this.props.rankId
+  }
+
+  get updatedAt(): Date {
+    return this.props.updatedAt!
   }
 
   private touch() {

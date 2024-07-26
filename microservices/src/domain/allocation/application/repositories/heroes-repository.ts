@@ -5,6 +5,7 @@ import { Location } from '../../enterprise/entities/value-objects/location'
 
 export interface LocationParams extends PaginationParams {
   location: Location
+  threatLevel: number
 }
 
 export abstract class HeroesRepository {

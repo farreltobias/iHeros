@@ -11,6 +11,10 @@ export class UniqueEntityID {
     return this.value
   }
 
+  isNumber(): boolean {
+    return !isNaN(Number(this.value))
+  }
+
   constructor(value?: string) {
     this.value = value ?? randomUUID()
   }

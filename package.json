@@ -5,7 +5,8 @@
     "lint": "npm run lint:md && npm run lint:spell",
     "lint:md": "markdownlint \"./**/*.md\" --ignore \"node_modules/**/*\"",
     "lint:md:fix": "markdownlint --fix \"./**/*.md\" --ignore \"node_modules/**/*\"",
-    "lint:spell": "npx cspell lint --show-suggestions --gitignore --no-progress \"./**/*.md\""
+    "lint:spell": "npx cspell lint --show-suggestions --gitignore --no-progress \"./**/*.md\"",
+    "copytypes": "node copytypes.js"
   },
   "devDependencies": {
     "cspell": "^6.8.1",

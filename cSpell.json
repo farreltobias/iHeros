@@ -3,10 +3,13 @@
   "language": "en",
   "caseSensitive": false,
   "words": [
+    "copytypes",
     "encrypter",
+    "geohash",
     "hasher",
     "ihero",
     "kafkajs",
+    "lifecycles",
     "strapi",
     "tsconfigs",
     "unplugin",

@@ -26,6 +26,14 @@ export class Duration {
     this.value = value ?? { min: 1, max: 600 }
   }
 
+  get min(): number {
+    return this.value.min
+  }
+
+  get max(): number {
+    return this.value.max
+  }
+
   get time(): number {
     return Math.floor(
       Math.random() * (this.value.max - this.value.min + 1) + this.value.min,

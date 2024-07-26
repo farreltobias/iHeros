@@ -6,11 +6,12 @@ import { Location } from './value-objects/location'
 import { ThreatStatus, ThreatStatusEnum } from './value-objects/threat-status'
 
 export interface ThreatProps {
-  monsterName: string
   status: ThreatStatus
   location: Location
-
   dangerId: UniqueEntityID
+  monsterId: UniqueEntityID
+
+  heroId?: UniqueEntityID | null
   durationTime?: number | null
 
   createdAt: Date
@@ -19,8 +20,8 @@ export interface ThreatProps {
 }
 
 export class Threat extends Entity<ThreatProps> {
-  get monsterName(): string {
-    return this.props.monsterName
+  get monsterId(): UniqueEntityID {
+    return this.props.monsterId
   }
 
   get status(): ThreatStatus {
@@ -51,6 +52,15 @@ export class Threat extends Entity<ThreatProps> {
     return this.props.dangerId
   }
 
+  get heroId(): UniqueEntityID | undefined | null {
+    return this.props.heroId
+  }
+
+  set heroId(heroId: UniqueEntityID | undefined | null) {
+    this.props.heroId = heroId
+    this.touch()
+  }
+
   get durationTime(): number | undefined | null {
     return this.props.durationTime
   }
@@ -67,6 +77,14 @@ export class Threat extends Entity<ThreatProps> {
   set battleStartedAt(battleStartedAt: Date | undefined | null) {
     this.props.battleStartedAt = battleStartedAt
     this.touch()
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt
+  }
+
+  get updatedAt(): Date | undefined | null {
+    return this.props.updatedAt
   }
 
   private touch() {

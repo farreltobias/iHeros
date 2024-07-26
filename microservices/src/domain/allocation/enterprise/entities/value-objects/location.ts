@@ -10,6 +10,14 @@ export class Location {
     return this.value
   }
 
+  get lat(): number {
+    return this.value.lat
+  }
+
+  get lng(): number {
+    return this.value.lng
+  }
+
   constructor(value?: LocationType) {
     this.value = value ?? { lat: 0, lng: 0 }
   }
