@@ -3,11 +3,9 @@ import { MessagePattern, Payload } from '@nestjs/microservices'
 import { WsException } from '@nestjs/websockets'
 import { z } from 'zod'
 
-import { AllocateHeroToThreatUseCase } from '@/domain/allocation/application/use-cases/allocate-hero-to-threat'
 import { CreateThreatUseCase } from '@/domain/allocation/application/use-cases/create-threat'
 import { GetDangerByNameUseCase } from '@/domain/allocation/application/use-cases/get-danger-by-name'
 import { GetOrCreateMonsterUseCase } from '@/domain/allocation/application/use-cases/get-or-create-monster'
-import { SelectNearestHeroByThreatUseCase } from '@/domain/allocation/application/use-cases/select-nearest-hero-by-threat'
 import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 
 const messageDataSchema = z.object({
@@ -31,15 +29,13 @@ const messageDataPipe = new ZodValidationPipe(messageDataSchema)
 type MessageDataSchema = z.infer<typeof messageDataSchema>
 
 @Controller()
-export class EventsController {
-  private logger = new Logger('EventsController')
+export class OccurrenceController {
+  private logger = new Logger(OccurrenceController.name)
 
   constructor(
     private getOrCreateMonster: GetOrCreateMonsterUseCase,
     private createThreat: CreateThreatUseCase,
     private getDangerByName: GetDangerByNameUseCase,
-    private selectNearestHero: SelectNearestHeroByThreatUseCase,
-    private allocateHeroToThreat: AllocateHeroToThreatUseCase,
   ) {}
 
   @MessagePattern('occurrence')
@@ -63,9 +59,12 @@ export class EventsController {
       throw new WsException('Error creating monster')
     }
 
+    const { monster } = monsterResult.value
+    const { danger } = dangerResult.value
+
     const threatResult = await this.createThreat.execute({
-      dangerId: dangerResult.value.danger.id.toString(),
-      monsterId: monsterResult.value.monster.id.toString(),
+      dangerId: danger.id.toString(),
+      monsterId: monster.id.toString(),
       latitude: data.location[0].lat,
       longitude: data.location[0].lng,
     })
@@ -74,23 +73,6 @@ export class EventsController {
       throw new WsException('Error creating threat')
     }
 
-    this.logger.log('Threat created')
-
-    // const heroResult = await this.selectNearestHero.execute({
-    //   threatId: threatResult.value.threat.id.toString(),
-    // })
-
-    // if (heroResult.isLeft()) {
-    //   throw new WsException('Error selecting hero')
-    // }
-
-    // const { hero } = heroResult.value
-
-    // this.logger.log('Hero selected')
-
-    // this.allocateHeroToThreat.execute({
-    //   heroId: hero.id.toString(),
-    //   threatId: threatResult.value.threat.id.toString(),
-    // })
+    this.logger.log(`Threat level ${danger.name} incoming!`)
   }
 }

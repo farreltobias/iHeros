@@ -13,13 +13,6 @@ export class SocketIoClientStrategy
    * This method is triggered when you run "app.listen()".
    */
   listen(callback: () => void) {
-    this.client.on('connection', () => {
-      console.log('connect')
-    })
-    this.client.on('error', (error) => {
-      console.log(error)
-    })
-
     this.messageHandlers.forEach((handler, pattern) => {
       this.client.on(pattern, (data) => {
         handler(data, this.client)

@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common'
 
 import { CreateThreatUseCase } from '@/domain/allocation/application/use-cases/create-threat'
+import { DeleteThreatUseCase } from '@/domain/allocation/application/use-cases/delete-threat'
+import { FetchThreatsBattlingUseCase } from '@/domain/allocation/application/use-cases/fetch-threats-battling'
 import { GetDangerByNameUseCase } from '@/domain/allocation/application/use-cases/get-danger-by-name'
 import { GetOrCreateMonsterUseCase } from '@/domain/allocation/application/use-cases/get-or-create-monster'
-import { SelectNearestHeroByThreatUseCase } from '@/domain/allocation/application/use-cases/select-nearest-hero-by-threat'
+import { UpdateHeroToUnassignedUseCase } from '@/domain/allocation/application/use-cases/update-hero-to-unassigned'
 
 import { DatabaseModule } from '../database/database.module'
 import { EnvModule } from '../env/env.module'
-import { EventsController } from './controllers/event.controller'
+import { OccurrenceController } from './controllers/occurrence.controller'
 import { SocketIoClientProvider } from './socket.provider'
 
 @Module({
@@ -17,8 +19,10 @@ import { SocketIoClientProvider } from './socket.provider'
     CreateThreatUseCase,
     GetOrCreateMonsterUseCase,
     GetDangerByNameUseCase,
-    SelectNearestHeroByThreatUseCase,
+    FetchThreatsBattlingUseCase,
+    UpdateHeroToUnassignedUseCase,
+    DeleteThreatUseCase,
   ],
-  controllers: [EventsController],
+  controllers: [OccurrenceController],
 })
 export class SocketModule {}
