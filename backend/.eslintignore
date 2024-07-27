@@ -1,3 +1,4 @@
 node_modules
 dist
 types/generated
+types/strapi.d.ts

@@ -37,6 +37,15 @@
       "required": true,
       "optionsDefaultLng": "-73.967590",
       "customField": "plugin::google-maps.location-picker"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "UNASSIGNED",
+        "BATTLING"
+      ],
+      "required": true,
+      "default": "UNASSIGNED"
     }
   }
 }

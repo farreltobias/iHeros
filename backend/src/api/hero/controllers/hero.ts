@@ -4,4 +4,11 @@
 
 import { factories } from '@strapi/strapi'
 
-export default factories.createCoreController('api::hero.hero')
+import { findManyNearby } from './find-many-nearby'
+
+export default factories.createCoreController(
+  'api::hero.hero',
+  ({ strapi }) => ({
+    findManyNearby: (ctx) => findManyNearby(ctx, strapi),
+  }),
+)

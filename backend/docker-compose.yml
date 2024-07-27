@@ -15,14 +15,14 @@ services:
       - ./src:/app/src
 
   db:
-    container_name: ihero-pg
-    image: postgres
+    container_name: ihero-backend-postgis
+    image: postgis/postgis
     ports:
       - 5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: docker
-      POSTGRES_DB: ihero
+      POSTGRES_DB: ihero-backend
       PGDATA: /data/postgres
     volumes:
       - ./data/pg:/data/postgres
