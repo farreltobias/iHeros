@@ -12,7 +12,7 @@ export class InMemoryHeroesRepository implements HeroesRepository {
   constructor(private ranksRepository: InMemoryRanksRepository) {}
 
   async findManyNearby(params: LocationParams): Promise<Hero[]> {
-    const ranks = Array.from({ length: params.rankLevel }, (_, i) => i + 1)
+    const ranks = Array.from({ length: params.threatLevel }, (_, i) => i + 1)
 
     const location = params.location.toValue()
 

@@ -12,7 +12,7 @@ const ranks = [
   { name: 'A', level: 2 },
   { name: 'B', level: 3 },
   { name: 'C', level: 4 },
-]
+] as const
 
 export function makeRank(
   override: Partial<Pick<RankProps, 'level'>> = {},

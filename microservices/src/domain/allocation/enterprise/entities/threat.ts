@@ -1,7 +1,9 @@
-import { Entity } from '@/core/entities/entity'
+import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 
+import { ThreatCreatedEvent } from '../events/threat-created-event'
+import { ThreatResolvedEvent } from '../events/threat-resolved-event'
 import { Location } from './value-objects/location'
 import { ThreatStatus, ThreatStatusEnum } from './value-objects/threat-status'
 
@@ -19,7 +21,7 @@ export interface ThreatProps {
   updatedAt?: Date | null
 }
 
-export class Threat extends Entity<ThreatProps> {
+export class Threat extends AggregateRoot<ThreatProps> {
   get monsterId(): UniqueEntityID {
     return this.props.monsterId
   }
@@ -42,6 +44,10 @@ export class Threat extends Entity<ThreatProps> {
 
     this.props.status = status
     this.touch()
+
+    if (value === ThreatStatusEnum.RESOLVED) {
+      this.addDomainEvent(new ThreatResolvedEvent(this))
+    }
   }
 
   get location(): Location {
@@ -95,6 +101,14 @@ export class Threat extends Entity<ThreatProps> {
     props: Optional<ThreatProps, 'createdAt'>,
     id?: UniqueEntityID,
   ): Threat {
-    return new Threat({ createdAt: new Date(), ...props }, id)
+    const threat = new Threat({ createdAt: new Date(), ...props }, id)
+
+    const isNewThreat = !id
+
+    if (isNewThreat) {
+      threat.addDomainEvent(new ThreatCreatedEvent(threat))
+    }
+
+    return threat
   }
 }
