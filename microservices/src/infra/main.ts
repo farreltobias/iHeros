@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core'
-import { MicroserviceOptions, Transport } from '@nestjs/microservices'
+import { MicroserviceOptions } from '@nestjs/microservices'
 
 import { AppModule } from './app.module'
 import { EnvService } from './env/env.service'
@@ -20,20 +20,6 @@ async function bootstrap() {
 
   app.connectMicroservice<MicroserviceOptions>({
     strategy: new SocketIoClientStrategy(socketIoClientProvider.getSocket()),
-  })
-
-  const kafkaBrokers = envService.get('KAFKA_BROKERS')
-
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        brokers: [kafkaBrokers],
-      },
-      consumer: {
-        groupId: 'ihero-consumer',
-      },
-    },
   })
 
   await app.startAllMicroservices()
