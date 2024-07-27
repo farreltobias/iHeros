@@ -27,7 +27,9 @@ export class StrapiHeroMapper {
   // Only to update status, the hero should not change in the microservice
   static toStrapi(hero: Hero) {
     return {
-      status: HeroStatusEnum[hero.status.value].toString(),
+      data: {
+        status: hero.status.value.toString(),
+      },
     }
   }
 }

@@ -14,10 +14,7 @@ export class StrapiRanksRepository implements RanksRepository {
   constructor(private strapi: StrapiService) {}
 
   async findById(id: string): Promise<Rank | null> {
-    const queryParams = { populate: 'rank' }
-    const query = new URLSearchParams(queryParams).toString()
-
-    const rank = await this.strapi.fetch<RankResponse>(`ranks/${id}?${query}`)
+    const rank = await this.strapi.fetch<RankResponse>(`ranks/${id}`)
 
     if (!rank || !rank.data) return null
 
