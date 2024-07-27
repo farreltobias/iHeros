@@ -10,8 +10,8 @@ import { Threat } from '@/domain/allocation/enterprise/entities/threat'
 import { EnvService } from '@/infra/env/env.service'
 
 @Injectable()
-export class SocketIoClientProvider implements OnModuleInit, OnModuleDestroy {
-  private socket?: Socket
+export class SocketClientProvider implements OnModuleInit, OnModuleDestroy {
+  private incomingThreatsSocket?: Socket
 
   constructor(
     private envService: EnvService,
@@ -23,16 +23,16 @@ export class SocketIoClientProvider implements OnModuleInit, OnModuleDestroy {
 
   private connect() {
     const socketUrl = this.envService.get('SOCKET_URL')
-    this.socket = io(socketUrl)
+    this.incomingThreatsSocket = io(socketUrl)
 
-    return this.socket
+    return this.incomingThreatsSocket
   }
 
   getSocket = () => {
-    if (!this.socket) {
+    if (!this.incomingThreatsSocket) {
       return this.connect()
     }
-    return this.socket
+    return this.incomingThreatsSocket
   }
 
   async onModuleInit() {
@@ -76,6 +76,6 @@ export class SocketIoClientProvider implements OnModuleInit, OnModuleDestroy {
   }
 
   onModuleDestroy() {
-    this.socket?.disconnect()
+    this.incomingThreatsSocket?.disconnect()
   }
 }

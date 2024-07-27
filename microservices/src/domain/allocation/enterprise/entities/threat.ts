@@ -2,6 +2,7 @@ import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 
+import { ThreatBattlingEvent } from '../events/threat-battling-event'
 import { ThreatCreatedEvent } from '../events/threat-created-event'
 import { ThreatResolvedEvent } from '../events/threat-resolved-event'
 import { Location } from './value-objects/location'
@@ -44,6 +45,10 @@ export class Threat extends AggregateRoot<ThreatProps> {
 
     this.props.status = status
     this.touch()
+
+    if (value === ThreatStatusEnum.BATTLING) {
+      this.addDomainEvent(new ThreatBattlingEvent(this))
+    }
 
     if (value === ThreatStatusEnum.RESOLVED) {
       this.addDomainEvent(new ThreatResolvedEvent(this))

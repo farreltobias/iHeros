@@ -6,6 +6,7 @@ import { EventHandler } from '@/core/events/event-handler'
 import { AllocateHeroToThreatUseCase } from '@/domain/allocation/application/use-cases/allocate-hero-to-threat'
 import { ThreatResolvedEvent } from '@/domain/allocation/enterprise/events/threat-resolved-event'
 
+import { Emitter } from '../events/emitter'
 import { Logger } from '../log/logger'
 import { Scheduler } from '../schedule/scheduler'
 import { EndBattleUseCase } from '../use-cases/end-battle'
@@ -21,20 +22,18 @@ export class OnThreatResolved implements EventHandler {
     private endBattle: EndBattleUseCase,
     private scheduler: Scheduler,
     private logger: Logger,
+    private emitter: Emitter,
   ) {
     this.setupSubscriptions()
   }
 
   setupSubscriptions(): void {
-    DomainEvents.register(
-      this.sendHeroToMenace.bind(this),
-      ThreatResolvedEvent.name,
-    )
+    DomainEvents.register(this.execute.bind(this), ThreatResolvedEvent.name)
   }
 
-  private async sendHeroToMenace({
-    threat: initialThreat,
-  }: ThreatResolvedEvent) {
+  private async execute({ threat: initialThreat }: ThreatResolvedEvent) {
+    this.emitter.emitEndBattle({ threat: initialThreat })
+
     const threatResult = await this.getThreatNearby.execute({
       heroId: initialThreat.heroId?.toString() as string, // Threat cannot be resolved without a hero
     })

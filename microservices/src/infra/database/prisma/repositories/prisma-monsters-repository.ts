@@ -27,4 +27,14 @@ export class PrismaMonstersRepository implements MonstersRepository {
 
     return PrismaMonsterMapper.toDomain(monster)
   }
+
+  async findById(id: string): Promise<Monster | null> {
+    const monster = await this.prisma.monster.findUnique({
+      where: { id },
+    })
+
+    if (!monster) return null
+
+    return PrismaMonsterMapper.toDomain(monster)
+  }
 }

@@ -14,6 +14,16 @@ export class InMemoryMonstersRepository implements MonstersRepository {
     return monster
   }
 
+  async findById(id: string): Promise<Monster | null> {
+    const monster = this.items.find((item) => item.id.toString() === id)
+
+    if (!monster) {
+      return null
+    }
+
+    return monster
+  }
+
   async create(monster: Monster): Promise<void> {
     this.items.push(monster)
   }

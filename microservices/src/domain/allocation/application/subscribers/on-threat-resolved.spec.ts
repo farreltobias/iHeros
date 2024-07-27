@@ -1,3 +1,4 @@
+import { FakeEmitter } from 'test/events/fake-emitter'
 import { makeDanger } from 'test/factories/make-danger'
 import { makeHero } from 'test/factories/make-hero'
 import { makeRank } from 'test/factories/make-rank'
@@ -15,6 +16,7 @@ import {
   ThreatStatus,
   ThreatStatusEnum,
 } from '../../enterprise/entities/value-objects/threat-status'
+import { EmitEndBattleData, Emitter } from '../events/emitter'
 import { Logger } from '../log/logger'
 import { ScheduleParams, Scheduler } from '../schedule/scheduler'
 import { AllocateHeroToThreatUseCase } from '../use-cases/allocate-hero-to-threat'
@@ -29,9 +31,11 @@ let inMemoryThreatsRepository: InMemoryThreatsRepository
 let getThreatNearby: GetThreatNearbyUseCase
 let allocateHeroToThreat: AllocateHeroToThreatUseCase
 let endBattle: EndBattleUseCase
+let emitter: Emitter
 let scheduler: Scheduler
 let logger: Logger
 
+let emitterSpy: MockInstance<[EmitEndBattleData], void>
 let schedulerScheduleSpy: MockInstance<[ScheduleParams], void>
 
 describe('On Threat Resolved', () => {
@@ -58,6 +62,8 @@ describe('On Threat Resolved', () => {
       inMemoryRanksRepository,
     )
 
+    emitter = new FakeEmitter()
+
     logger = new FakeLogger()
 
     endBattle = new EndBattleUseCase(
@@ -67,7 +73,9 @@ describe('On Threat Resolved', () => {
     )
 
     scheduler = new FakeScheduler(logger)
+
     schedulerScheduleSpy = vi.spyOn(scheduler, 'schedule')
+    emitterSpy = vi.spyOn(emitter, 'emitEndBattle')
 
     new OnThreatResolved(
       getThreatNearby,
@@ -75,6 +83,7 @@ describe('On Threat Resolved', () => {
       endBattle,
       scheduler,
       logger,
+      emitter,
     )
   })
 
@@ -109,6 +118,7 @@ describe('On Threat Resolved', () => {
     await inMemoryThreatsRepository.save(threat)
 
     await waitFor(() => {
+      expect(emitterSpy).toHaveBeenCalled()
       expect(schedulerScheduleSpy).toHaveBeenCalled()
     })
   })

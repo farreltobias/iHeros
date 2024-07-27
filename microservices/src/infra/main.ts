@@ -3,8 +3,8 @@ import { MicroserviceOptions } from '@nestjs/microservices'
 
 import { AppModule } from './app.module'
 import { EnvService } from './env/env.service'
-import { SocketIoClientProvider } from './socket/socket.provider'
-import { SocketIoClientStrategy } from './socket/socket.strategy'
+import { SocketClientProvider } from './socket/client/socket-client.provider'
+import { SocketClientStrategy } from './socket/client/socket-client.strategy'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -14,12 +14,11 @@ async function bootstrap() {
   const envService = app.get(EnvService)
   const port = envService.get('PORT')
 
-  const socketIoClientProvider = app.get<SocketIoClientProvider>(
-    SocketIoClientProvider,
-  )
+  const socketIoClientProvider =
+    app.get<SocketClientProvider>(SocketClientProvider)
 
   app.connectMicroservice<MicroserviceOptions>({
-    strategy: new SocketIoClientStrategy(socketIoClientProvider.getSocket()),
+    strategy: new SocketClientStrategy(socketIoClientProvider.getSocket()),
   })
 
   await app.startAllMicroservices()

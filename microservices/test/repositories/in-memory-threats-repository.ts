@@ -52,8 +52,12 @@ export class InMemoryThreatsRepository implements ThreatsRepository {
 
     this.items[index] = threat
 
+    if (threat.status.isEqual(ThreatStatusEnum.BATTLING)) {
+      return DomainEvents.dispatchEventsForAggregate(threat.id)
+    }
+
     if (threat.status.isEqual(ThreatStatusEnum.RESOLVED)) {
-      DomainEvents.dispatchEventsForAggregate(threat.id)
+      return DomainEvents.dispatchEventsForAggregate(threat.id)
     }
   }
 

@@ -7,7 +7,9 @@ import { AllocateHeroToThreatUseCase } from '@/domain/allocation/application/use
 import { GetHeroNearbyUseCase } from '@/domain/allocation/application/use-cases/get-hero-nearby'
 import { ThreatCreatedEvent } from '@/domain/allocation/enterprise/events/threat-created-event'
 
+import { Emitter } from '../events/emitter'
 import { Logger } from '../log/logger'
+import { MonstersRepository } from '../repositories/monsters-repository'
 import { Scheduler } from '../schedule/scheduler'
 import { EndBattleUseCase } from '../use-cases/end-battle'
 
@@ -19,22 +21,30 @@ export class OnThreatCreated implements EventHandler {
     private getHeroNearby: GetHeroNearbyUseCase,
     private allocateHeroToThreat: AllocateHeroToThreatUseCase,
     private endBattle: EndBattleUseCase,
+    private monstersRepository: MonstersRepository,
     private scheduler: Scheduler,
+    private emitter: Emitter,
     private logger: Logger,
   ) {
     this.setupSubscriptions()
   }
 
   setupSubscriptions(): void {
-    DomainEvents.register(
-      this.sendHeroToMenace.bind(this),
-      ThreatCreatedEvent.name,
-    )
+    DomainEvents.register(this.execute.bind(this), ThreatCreatedEvent.name)
   }
 
-  private async sendHeroToMenace({
-    threat: initialThreat,
-  }: ThreatCreatedEvent) {
+  private async execute({ threat: initialThreat }: ThreatCreatedEvent) {
+    const monster = await this.monstersRepository.findById(
+      initialThreat.monsterId.toString(),
+    )
+
+    if (!monster) {
+      this.logger.error('Monster not found', this.context)
+      return
+    }
+
+    this.emitter.emitThreat({ threat: initialThreat, monster })
+
     const heroResult = await this.getHeroNearby.execute({
       threat: initialThreat,
     })
