@@ -13,25 +13,29 @@ import {
   ThreatStatus,
   ThreatStatusEnum,
 } from '../../enterprise/entities/value-objects/threat-status'
+import { Logger } from '../log/logger'
 import { HeroesRepository } from '../repositories/heroes-repository'
 import { ThreatsRepository } from '../repositories/threats-repository'
 import { HeroNotInBattleError } from './errors/hero-not-in-battle'
 import { WrongThreatStatusError } from './errors/wrong-threat-status-error'
 
-interface EndBattleRequestUseCase {
+export interface EndBattleRequestUseCase {
   heroId: string
 }
 
-type EndBattleResponseUseCase = Either<
+export type EndBattleResponseUseCase = Either<
   ResourceNotFoundError | HeroNotInBattleError | WrongThreatStatusError,
   { hero: Hero; threat: Threat }
 >
 
 @Injectable()
 export class EndBattleUseCase {
+  private context = EndBattleUseCase.name
+
   constructor(
     private threatsRepository: ThreatsRepository,
     private heroesRepository: HeroesRepository,
+    private logger: Logger,
   ) {}
 
   async execute({
@@ -62,6 +66,8 @@ export class EndBattleUseCase {
 
     hero.status = HeroStatus.create(HeroStatusEnum.UNASSIGNED)
     await this.heroesRepository.save(hero)
+
+    this.logger.log(`Battle ended for hero ${hero.name} 🏆`, this.context)
 
     return right({ hero, threat })
   }

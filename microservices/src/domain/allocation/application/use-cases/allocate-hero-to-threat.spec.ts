@@ -26,7 +26,9 @@ let sut: AllocateHeroToThreatUseCase
 describe('Allocate Hero to Threat Use Case', () => {
   beforeEach(() => {
     inMemoryDangersRepository = new InMemoryDangersRepository()
-    inMemoryThreatsRepository = new InMemoryThreatsRepository()
+    inMemoryThreatsRepository = new InMemoryThreatsRepository(
+      inMemoryDangersRepository,
+    )
     inMemoryRanksRepository = new InMemoryRanksRepository()
     inMemoryHeroesRepository = new InMemoryHeroesRepository(
       inMemoryRanksRepository,
@@ -52,13 +54,11 @@ describe('Allocate Hero to Threat Use Case', () => {
     const threat = makeThreat({ dangerId: danger.id })
     inMemoryThreatsRepository.items.push(threat)
 
-    const result = await sut.execute({
-      threatId: threat.id.toString(),
-      heroId: hero.id.toString(),
-    })
+    const result = await sut.execute({ threat, hero })
 
     expect(result.isRight()).toBe(true) // garantes condition below
     expect(result.value).toEqual({
+      durationTime: expect.any(Number),
       hero: expect.objectContaining({
         status: expect.objectContaining({
           value: 'BATTLING',
@@ -82,11 +82,14 @@ describe('Allocate Hero to Threat Use Case', () => {
     }
   })
 
-  it('should not be able to allocate hero to threat that does not exist', async () => {
-    const result = await sut.execute({
-      threatId: 'invalid-threat-id',
-      heroId: 'invalid-hero-id',
-    })
+  it('should not be able to allocate hero to threat with danger that does not exist', async () => {
+    const hero = makeHero()
+    inMemoryHeroesRepository.items.push(hero)
+
+    const threat = makeThreat()
+    inMemoryThreatsRepository.items.push(threat)
+
+    const result = await sut.execute({ threat, hero })
 
     expect(result.isLeft()).toBe(true)
 
@@ -109,10 +112,7 @@ describe('Allocate Hero to Threat Use Case', () => {
     const threat = makeThreat({ dangerId: danger.id, status })
     inMemoryThreatsRepository.items.push(threat)
 
-    const result = await sut.execute({
-      threatId: threat.id.toString(),
-      heroId: hero.id.toString(),
-    })
+    const result = await sut.execute({ threat, hero })
 
     expect(result.isLeft()).toBe(true)
 
@@ -134,10 +134,7 @@ describe('Allocate Hero to Threat Use Case', () => {
     const threat = makeThreat({ dangerId: danger.id })
     inMemoryThreatsRepository.items.push(threat)
 
-    const result = await sut.execute({
-      threatId: threat.id.toString(),
-      heroId: hero.id.toString(),
-    })
+    const result = await sut.execute({ threat, hero })
 
     expect(result.isLeft()).toBe(true)
 

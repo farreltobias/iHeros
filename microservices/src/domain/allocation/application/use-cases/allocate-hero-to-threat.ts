@@ -20,14 +20,18 @@ import { ThreatsRepository } from '../repositories/threats-repository'
 import { RankNotSuitableError } from './errors/rank-not-suitable-error'
 import { WrongThreatStatusError } from './errors/wrong-threat-status-error'
 
-interface AllocateHeroToThreatRequestUseCase {
-  heroId: string
-  threatId: string
+export interface AllocateHeroToThreatRequestUseCase {
+  hero: Hero
+  threat: Threat
 }
 
-type AllocateHeroToThreatResponseUseCase = Either<
+export type AllocateHeroToThreatResponseUseCase = Either<
   ResourceNotFoundError | WrongThreatStatusError | RankNotSuitableError,
-  { threat: Threat; hero: Hero }
+  {
+    threat: Threat
+    hero: Hero
+    durationTime: number
+  }
 >
 
 @Injectable()
@@ -40,16 +44,9 @@ export class AllocateHeroToThreatUseCase {
   ) {}
 
   async execute({
-    threatId,
-    heroId,
+    hero,
+    threat,
   }: AllocateHeroToThreatRequestUseCase): Promise<AllocateHeroToThreatResponseUseCase> {
-    const threat = await this.threatsRepository.findById(threatId)
-    const hero = await this.heroesRepository.findById(heroId)
-
-    if (!threat || !hero) {
-      return left(new ResourceNotFoundError())
-    }
-
     if (!threat.status.isEqual(ThreatStatusEnum.UNASSIGNED)) {
       return left(new WrongThreatStatusError())
     }
@@ -80,6 +77,6 @@ export class AllocateHeroToThreatUseCase {
       this.heroesRepository.save(hero),
     ])
 
-    return right({ threat, hero })
+    return right({ threat, hero, durationTime: danger.duration.time })
   }
 }

@@ -10,8 +10,10 @@ let sut: CreateThreatUseCase
 
 describe('Create Threat Use Case', () => {
   beforeEach(() => {
-    inMemoryThreatsRepository = new InMemoryThreatsRepository()
     inMemoryDangersRepository = new InMemoryDangersRepository()
+    inMemoryThreatsRepository = new InMemoryThreatsRepository(
+      inMemoryDangersRepository,
+    )
     sut = new CreateThreatUseCase(
       inMemoryThreatsRepository,
       inMemoryDangersRepository,
