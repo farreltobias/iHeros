@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 
 import { envSchema } from './env/env'
 import { EnvModule } from './env/env.module'
+import { EventsModule } from './events/events.module'
 import { SocketModule } from './socket/socket.module'
 
 @Module({
@@ -13,6 +14,7 @@ import { SocketModule } from './socket/socket.module'
     }),
     SocketModule,
     EnvModule,
+    EventsModule,
   ],
 })
 export class AppModule {}
