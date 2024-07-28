@@ -70,4 +70,8 @@
 
 body {
   filter: saturate(0.5) sepia(0.1);
+
+  /* .leaflet-layer {
+    filter: saturate(1) sepia(0);
+  } */
 }
