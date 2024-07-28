@@ -57,6 +57,9 @@ export class AllocateHeroToThreatUseCase {
 
     const rank = await this.rankRepository.findById(hero.rankId.toString())
 
+    // console.log('danger', danger)
+    // console.log('rank', rank)
+
     if (!danger || !rank) {
       return left(new ResourceNotFoundError())
     }

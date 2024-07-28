@@ -6,6 +6,70 @@ Aqui na ZRP nós aplicamos este mesmo teste para as vagas em todos os níveis, o
 
 Nós fazemos isso esperando que as pessoas mais iniciantes entendam qual o modelo de profissional que temos por aqui e que buscamos para o nosso time. Portanto, se você estiver se candidatando a uma vaga mais iniciante, não se assuste, e faça o melhor que você puder e os passos que conseguir!
 
+
+## Rodar o projeto
+
+Para rodar o projeto, você precisará ter o npm, yarn e pnpm instalado em sua máquina. Caso não tenha, você pode baixar o Node.js [aqui](https://nodejs.org/en/), o Yarn [aqui](https://yarnpkg.com/) e o Pnpm [aqui](https://pnpm.io/). Além do node, você precisará ter o Docker e o Docker Compose instalados em sua máquina. Caso não tenha, você pode baixar o Docker [aqui](https://www.docker.com/get-started) e o Docker Compose [aqui](https://docs.docker.com/compose/install/).
+
+Para baixar e iniciar o setup do projeto, você pode seguir os passos abaixo:
+
+1. Clone o repositório:
+
+```bash
+# Clone the repository
+$ git clone https://github.com/farreltobias/iHeros.git iHeros
+
+# Enter the project directory
+$ cd iHeros
+
+# Install the dependencies
+$ pnpm run setup
+``` 
+
+O comando `pnpm run setup` irá instalar as dependências de todos os projetos. Após a instalação, rode o comando `pnpm run build:db` para iniciar os bancos de dados nos containers do Docker e rode `pnpm run seed` para popular o banco de dados com dados iniciais. (Rank e Danger). Para rodar o projeto, você pode rodar os seguintes comandos:
+
+[IMPORTANTE] Antes de rodar o projeto, você precisa criar um arquivo `.env` na raiz de cada projeto seguindo as instruções do arquivo `.env.example`. 
+
+Para o frontend, o `STRAPI_TOKEN` precisa ter pelo menos os acesos "Read-only".
+
+Para o micro-serviço de heróis, o `STRAPI_TOKEN` precisa ter pelo menos os seguintes acessos:
+
+- Hero:
+  - findManyNearby
+  - findOne
+  - update
+  - find
+- Rank
+  - findOne
+  - find
+
+```bash
+# Run the backend
+$ pnpm run start:backend
+
+# Run the frontend
+$ pnpm run start:frontend
+
+# Run the microservice
+$ pnpm run start:microservice
+```
+
+Pronto, o projeto estará rodando em `http://localhost:3000`. Você verá os heróis sendo alocados para as ameaças em tempo real. Lembrando que é necessário cadastrar os heróis na plataforma admin, rodando em `http://localhost:1337/admin`.
+
+Para rodar os testes no micro-serviço, você pode rodar o seguinte comando:
+
+```bash
+# Run the tests
+$ cd microservice && pnpm run test
+```
+
+Para acessar o prisma studio, você pode rodar o seguinte comando:
+
+```bash
+# Run prisma studio
+$ cd microservice && pnpm prisma studio
+```
+
 ### Instruções
 
 Você deverá criar um fork deste projeto, e desenvolver em cima do seu fork. **Use o README principal do seu repositório para nos contar como foi resolver seu teste**, as decisões tomadas, como você organizou e separou seu código, e principalmente **as instruções de como rodar seu projeto**.

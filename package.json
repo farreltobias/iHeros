@@ -6,7 +6,20 @@
     "lint:md": "markdownlint \"./**/*.md\" --ignore \"node_modules/**/*\"",
     "lint:md:fix": "markdownlint --fix \"./**/*.md\" --ignore \"node_modules/**/*\"",
     "lint:spell": "npx cspell lint --show-suggestions --gitignore --no-progress \"./**/*.md\"",
-    "copytypes": "node copytypes.js"
+    "copytypes": "node copytypes.js",
+    "setup:backend": "cd backend && yarn",
+    "setup:frontend": "cd frontend && pnpm i",
+    "setup:microservices": "cd microservices && pnpm i",
+    "setup": "pnpm i && pnpm run setup:backend && pnpm run setup:frontend && pnpm run setup:microservices",
+    "build:backend:db": "cd backend && docker compose up -d db",
+    "build:microservices:db": "cd microservices && docker compose up -d db",
+    "build:db": "pnpm run build:backend:db && pnpm run build:microservices:db",
+    "seed:backend": "cd backend && yarn strapi export --no-encrypt -f ./seed-data",
+    "seed:microservices": "cd microservices && pnpm prisma migrate deploy && pnpm prisma generate && pnpm prisma db seed",
+    "seed": "pnpm run seed:backend && pnpm run seed:microservices",
+    "start:backend": "cd backend && NODE_ENV=postgres yarn build && yarn start",
+    "start:frontend": "cd frontend && pnpm build && pnpm start",
+    "start:microservices": "cd microservices && pnpm build && pnpm start"
   },
   "devDependencies": {
     "cspell": "^6.8.1",

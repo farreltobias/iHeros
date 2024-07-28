@@ -1,19 +1,6 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    container_name: strapi-app
-    ports:
-      - '3333:3333'
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    volumes:
-      - ./src:/app/src
-
   db:
     container_name: ihero-backend-postgis
     image: postgis/postgis
@@ -23,19 +10,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: ihero-backend
-      PGDATA: /data/postgres
-    volumes:
-      - ./data/pg:/data/postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
-
-  redis:
-    container_name: ihero-redis
-    image: redis
-    ports:
-      - 6379:6379
-    volumes:
-      - ./data/redis:/data
