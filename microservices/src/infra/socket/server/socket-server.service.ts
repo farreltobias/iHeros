@@ -9,7 +9,7 @@ import {
 } from '@/domain/allocation/application/events/emitter'
 
 import { ThreatPresenter } from './presenters/threat.presenter'
-import { ThreatWithMonsterPresenter } from './presenters/threat-with-monster.presenter'
+import { ThreatDetailsPresenter } from './presenters/threat-details.presenter'
 
 @Injectable()
 export class SocketServerService implements Emitter {
@@ -20,7 +20,7 @@ export class SocketServerService implements Emitter {
   }
 
   emitThreat(data: EmitThreatData) {
-    this.socket?.emit('threat', ThreatWithMonsterPresenter.toHTTP(data))
+    this.socket?.emit('threat', ThreatDetailsPresenter.toHTTP(data))
   }
 
   emitStartBattle(data: EmitStartBattleData): void {

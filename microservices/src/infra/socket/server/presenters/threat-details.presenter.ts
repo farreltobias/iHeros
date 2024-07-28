@@ -1,13 +1,15 @@
+import { Danger } from '@/domain/allocation/enterprise/entities/danger'
 import { Monster } from '@/domain/allocation/enterprise/entities/monster'
 import { Threat } from '@/domain/allocation/enterprise/entities/threat'
 
-type ThreatWithMonster = {
+type ThreatDetails = {
   threat: Threat
   monster: Monster
+  danger: Danger
 }
 
-export class ThreatWithMonsterPresenter {
-  static toHTTP({ threat, monster }: ThreatWithMonster) {
+export class ThreatDetailsPresenter {
+  static toHTTP({ threat, monster, danger }: ThreatDetails) {
     return {
       id: threat.id.toString(),
       dangerId: threat.dangerId.toString(),
@@ -27,6 +29,12 @@ export class ThreatWithMonsterPresenter {
         name: monster.name,
         description: monster.description,
         photoUrl: monster.photoUrl,
+      },
+      danger: {
+        id: danger.id.toString(),
+        name: danger.name,
+        level: danger.level,
+        duration: danger.duration.toValue(),
       },
     }
   }

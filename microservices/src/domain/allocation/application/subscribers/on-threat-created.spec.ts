@@ -85,6 +85,7 @@ describe('On Threat Created', () => {
       getHeroNearby,
       allocateHeroToThreat,
       endBattle,
+      inMemoryDangersRepository,
       inMemoryMonstersRepository,
       scheduler,
       emitter,

@@ -17,8 +17,8 @@ import { SocketServerModule } from '../socket/server/socket-server.module'
   imports: [DatabaseModule, ScheduleModule, LogModule, SocketServerModule],
   providers: [
     OnThreatCreated,
-    OnThreatResolved,
     OnThreatBattling,
+    OnThreatResolved,
     GetHeroNearbyUseCase,
     GetThreatNearbyUseCase,
     AllocateHeroToThreatUseCase,

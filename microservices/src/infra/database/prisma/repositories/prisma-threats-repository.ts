@@ -55,6 +55,10 @@ export class PrismaThreatsRepository implements ThreatsRepository {
       data,
     })
 
+    if (threat.status.isEqual(ThreatStatusEnum.BATTLING)) {
+      DomainEvents.dispatchEventsForAggregate(threat.id)
+    }
+
     if (threat.status.isEqual(ThreatStatusEnum.RESOLVED)) {
       DomainEvents.dispatchEventsForAggregate(threat.id)
     }

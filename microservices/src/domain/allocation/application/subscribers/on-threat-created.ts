@@ -9,6 +9,7 @@ import { ThreatCreatedEvent } from '@/domain/allocation/enterprise/events/threat
 
 import { Emitter } from '../events/emitter'
 import { Logger } from '../log/logger'
+import { DangersRepository } from '../repositories/dangers-repository'
 import { MonstersRepository } from '../repositories/monsters-repository'
 import { Scheduler } from '../schedule/scheduler'
 import { EndBattleUseCase } from '../use-cases/end-battle'
@@ -21,6 +22,7 @@ export class OnThreatCreated implements EventHandler {
     private getHeroNearby: GetHeroNearbyUseCase,
     private allocateHeroToThreat: AllocateHeroToThreatUseCase,
     private endBattle: EndBattleUseCase,
+    private dangersRepository: DangersRepository,
     private monstersRepository: MonstersRepository,
     private scheduler: Scheduler,
     private emitter: Emitter,
@@ -43,7 +45,16 @@ export class OnThreatCreated implements EventHandler {
       return
     }
 
-    this.emitter.emitThreat({ threat: initialThreat, monster })
+    const danger = await this.dangersRepository.findById(
+      initialThreat.dangerId.toString(),
+    )
+
+    if (!danger) {
+      this.logger.error('Danger not found', this.context)
+      return
+    }
+
+    this.emitter.emitThreat({ threat: initialThreat, monster, danger })
 
     const heroResult = await this.getHeroNearby.execute({
       threat: initialThreat,

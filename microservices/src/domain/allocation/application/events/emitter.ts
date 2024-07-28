@@ -1,11 +1,13 @@
 import { Server } from 'socket.io'
 
+import { Danger } from '../../enterprise/entities/danger'
 import { Monster } from '../../enterprise/entities/monster'
 import { Threat } from '../../enterprise/entities/threat'
 
 export type EmitThreatData = {
   threat: Threat
   monster: Monster
+  danger: Danger
 }
 
 export type EmitStartBattleData = {
