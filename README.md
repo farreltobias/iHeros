@@ -6,7 +6,6 @@ Aqui na ZRP nós aplicamos este mesmo teste para as vagas em todos os níveis, o
 
 Nós fazemos isso esperando que as pessoas mais iniciantes entendam qual o modelo de profissional que temos por aqui e que buscamos para o nosso time. Portanto, se você estiver se candidatando a uma vaga mais iniciante, não se assuste, e faça o melhor que você puder e os passos que conseguir!
 
-
 ## Rodar o projeto
 
 Para rodar o projeto, você precisará ter o npm, yarn e pnpm instalado em sua máquina. Caso não tenha, você pode baixar o Node.js [aqui](https://nodejs.org/en/), o Yarn [aqui](https://yarnpkg.com/) e o Pnpm [aqui](https://pnpm.io/). Além do node, você precisará ter o Docker e o Docker Compose instalados em sua máquina. Caso não tenha, você pode baixar o Docker [aqui](https://www.docker.com/get-started) e o Docker Compose [aqui](https://docs.docker.com/compose/install/).
@@ -69,6 +68,31 @@ Para acessar o prisma studio, você pode rodar o seguinte comando:
 # Run prisma studio
 $ cd microservice && pnpm prisma studio
 ```
+
+## Como funciona?
+
+O projeto é dividido em 3 partes:
+
+- Backend: O backend é responsável por gerenciar os heróis e suas classes (ranks). Ele é construído com o Strapi, um headless CMS que fornece uma API REST para gerenciar os dados. O backend não é responsável por alocar os heróis para as ameaças, apenas por gerenciar os dados dos heróis e ranks.
+- Frontend: O frontend é responsável por gerenciar os heróis e suas classes (ranks). Ele é construído com o Next.js, um framework React para construir aplicações web. O frontend consome a API REST do Strapi para gerenciar os dados dos heróis e ranks (não construído ainda) e consome o socket do micro-serviço para exibir as ameaças, o status da ameaça e a alocação dos heróis em tempo real (última parte não construída ainda).
+- Micro-serviço: O micro-serviço é responsável por alocar os heróis para as ameaças automaticamente. Ele é construído com o NestJS, um framework Node.js para construir aplicações escaláveis. O micro-serviço consome o socket da ZRP (ficcionalmente da ONU) que emite eventos de ameaças a cada 30 segundos. Ele aloca os heróis de acordo com a localização e rank adequado ao nível de ameaças.
+
+O processo de alocação dos heróis é feito da seguinte forma:
+
+1. O micro-serviço escuta os eventos de ameaças emitidos pelo socket da ZRP.
+2. Quando um evento de ameaça é emitido, o micro-serviço guarda a ameaça em banco de dados separado, com as informações das ameaças e busca os heróis mais próximos da localização da ameaça.
+3. O micro-serviço aloca os heróis de acordo com o rank adequado ao nível de ameaças. Se não houver heróis disponíveis, ele não aloca nenhum herói e deixa a ameaça em espera com o status "UNASSIGNED".
+4. O micro-serviço desaloca os heróis após o tempo de batalha com a ameaça (por meio de um cron scheduler). O tempo de batalha é definido de acordo com o rank do herói e o nível da ameaça.
+5. O micro-serviço atualiza o status da ameaça para "BATTLING" e guarda o tempo de batalha com a ameaça.
+6. Após o tempo de batalha, o micro-serviço atualiza o status da ameaça para "RESOLVED" e guarda o tempo de batalha com a ameaça.
+7. O herói que batalhou então procura a próxima ameaça mais próxima com o status "UNASSIGNED" e repete o processo.
+8. Se não houver mais ameaças com o status "UNASSIGNED", o herói fica em espera até que uma nova ameaça seja emitida.
+   
+A imagem abaixo mostra o fluxo de alocação dos heróis para as ameaças com mais detalhes:
+
+![Fluxo de alocação dos heróis para as ameaças](./ihero-process-line.png)
+
+## Mais informações do desafio
 
 ### Instruções
 
