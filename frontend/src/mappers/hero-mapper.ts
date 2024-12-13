@@ -19,6 +19,7 @@ export class HeroMapper {
     return {
       id: data.id,
       name: data.attributes.name,
+      status: data.attributes.status,
       location,
       photoUrl: data.attributes.photo.data.attributes.url,
       rank: {
