@@ -16,7 +16,7 @@ export class NestScheduler implements Scheduler {
 
   schedule({ date, name, handler }: ScheduleParams): void {
     const cronDate = dayjs(date).isBefore(dayjs())
-      ? dayjs(date).add(1, 's').toDate()
+      ? dayjs(date).add(2, 's').toDate()
       : date
 
     try {
