@@ -1,4 +1,4 @@
-import { Threat } from '@/src/types/threat'
+import { Threat } from '@/src/types/characters'
 
 type Props = {
   setThreats: React.Dispatch<React.SetStateAction<Threat[]>>

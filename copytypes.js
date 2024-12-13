@@ -1,9 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 
-const destinationFolder = "microservices/src/core/types";
+const microserviceFolder = "microservices/src/core/types";
+const frontendFolder = "frontend/src/types";
 
-const files = [
+const files = (destinationFolder) => [
   {
     src: path.join(__dirname, "./backend/types/generated/contentTypes.d.ts"),
     dest: path.join(__dirname, `./${destinationFolder}/contentTypes.d.ts`),
@@ -41,4 +42,4 @@ function copyFile({ src, dest }) {
   });
 }
 
-files.forEach((file) => copyFile(file));
+[microserviceFolder, frontendFolder].flatMap(files).forEach((file) => copyFile(file));

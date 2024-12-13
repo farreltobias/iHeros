@@ -1,0 +1,5 @@
+node_modules
+.next
+src/types/contentTypes.d.ts
+src/types/components.d.ts
+src/types/strapi.d.ts

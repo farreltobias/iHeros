@@ -1,5 +1,7 @@
 import io from 'socket.io-client'
 
-export const socket = io('http://localhost:3333', {
+import { envClient } from '../env/client'
+
+export const socket = io(envClient.NEXT_PUBLIC_SOCKET_URL, {
   autoConnect: false,
 })

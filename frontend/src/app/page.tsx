@@ -4,20 +4,26 @@ import { useContext, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 
 import { Glitch } from '@/src/components/glitch'
-import { SocketContext } from '@/src/context/socket-context/context'
+import { ThreatsContext } from '@/src/context/threats-context/context'
+
+// import { HeroesContext } from '../context/heroes-context/context'
 
 const Map = dynamic(
   () => import('../components/map').then((module) => module.Map),
   { ssr: false },
 )
 
-const Marker = dynamic(
-  () => import('../components/marker').then((module) => module.Marker),
+const ThreatMarker = dynamic(
+  () =>
+    import('../components/markers/threat').then(
+      (module) => module.ThreatMarker,
+    ),
   { ssr: false },
 )
 
 export default function Home() {
-  const { threats } = useContext(SocketContext)
+  const { threats } = useContext(ThreatsContext)
+  // const { heroes } = useContext(HeroesContext)
 
   useEffect(() => {
     console.log(threats)
@@ -28,7 +34,7 @@ export default function Home() {
       <Glitch />
       <Map>
         {threats.map((threat) => (
-          <Marker key={threat.id} {...threat} />
+          <ThreatMarker key={threat.id} threat={threat} />
         ))}
       </Map>
     </main>

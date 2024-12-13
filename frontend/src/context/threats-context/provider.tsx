@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 
 import { socket } from '@/src/socket'
 import { socketEvents } from '@/src/socket/events'
-import { Threat } from '@/src/types/threat'
+import { Threat } from '@/src/types/characters'
 
-import { SocketContext } from './context'
+import { ThreatsContext } from './context'
 
-export const SocketProvider: React.FC<React.PropsWithChildren> = ({
+export const ThreatsProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [threats, setThreats] = useState<Threat[]>([])
@@ -49,8 +49,8 @@ export const SocketProvider: React.FC<React.PropsWithChildren> = ({
   }, [threats, onBattleEnd])
 
   return (
-    <SocketContext.Provider value={{ threats }}>
+    <ThreatsContext.Provider value={{ threats }}>
       {children}
-    </SocketContext.Provider>
+    </ThreatsContext.Provider>
   )
 }
